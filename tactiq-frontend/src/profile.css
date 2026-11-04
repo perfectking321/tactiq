@@ -1,0 +1,115 @@
+/* PROFILE: three cards + a sticky save bar inside the page body. */
+.pf {
+  min-height: calc(420 * var(--u));
+  margin-bottom: calc(-1 * var(--pg-y));
+}
+
+.pf-grid {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--gap);
+}
+
+.pf-card {
+  gap: calc(14 * var(--u));
+  overflow-y: auto;
+}
+
+.pf-card .ui-card-head {
+  margin-bottom: 0;
+}
+
+.pf-who {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+}
+
+.pf-who .ui-field {
+  flex: 1;
+}
+
+.pf-avatar {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: calc(var(--ctl) * 1.25);
+  height: calc(var(--ctl) * 1.25);
+  border-radius: 50%;
+  background: var(--grad);
+  color: #fff;
+  font-size: var(--fs-title);
+  font-weight: 600;
+}
+
+.pf-rows {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: calc(12 * var(--u));
+}
+
+.pf-rows .ui-stepper {
+  align-self: stretch;
+  justify-content: space-between;
+}
+
+.pf-injury {
+  overflow: hidden;
+}
+
+.pf-figure {
+  flex: 1 1 0;
+  min-height: calc(120 * var(--u));
+  display: flex;
+}
+
+.pf-bar {
+  position: sticky;
+  bottom: calc(-1 * var(--pg-y));
+  z-index: 5;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin: 0 calc(-1 * var(--pg-x));
+  padding: 10px var(--pg-x);
+  border-top: 1px solid var(--border);
+  background: #fff;
+  opacity: 0.55;
+  transition: opacity var(--ease);
+}
+
+.pf-bar.is-on {
+  opacity: 1;
+}
+
+.pf-bar-msg,
+.pf-bar-err {
+  margin-right: auto;
+  font-size: var(--fs-label);
+  color: var(--muted);
+}
+
+.pf-bar-err {
+  color: #b42318;
+}
+
+@container main (max-width: 900px) {
+  .pf-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pf-injury {
+    grid-column: 1 / -1;
+    min-height: calc(320 * var(--u));
+  }
+}
+
+@container main (max-width: 620px) {
+  .pf-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

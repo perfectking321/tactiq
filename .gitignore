@@ -1,0 +1,25 @@
+# secrets and local state
+.env
+*.db
+.venv/
+__pycache__/
+.pytest_cache/
+
+# build output and dependencies
+node_modules/
+dist/
+
+# rebuilt from kb/ by setup or the Docker build
+tactiq-api/index/
+
+# embedding model cache, re-downloaded by setup or the Docker build
+tactiq-api/models/
+tactiq-api/eval/output/
+
+# old design snapshots and tooling output
+tactiq-frontend/src.backup-*/
+graphify-out/
+
+# misc
+*.log
+.DS_Store

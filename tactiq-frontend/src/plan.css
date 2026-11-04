@@ -1,0 +1,244 @@
+/* PLAN: 7 day cards, detail + "why" cards. */
+.pl {
+  min-height: calc(420 * var(--u));
+}
+
+.pl-stale {
+  padding: 10px 14px;
+  border-radius: var(--radius-ctl);
+  background: var(--warning-bg);
+  font-size: var(--fs-label);
+  color: #b54708;
+}
+
+.pl-week {
+  flex: none;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: calc(10 * var(--u));
+}
+
+.pl-tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: calc(4 * var(--u));
+  min-width: 0;
+  padding: calc(12 * var(--u)) calc(14 * var(--u));
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  background: #fff;
+  box-shadow: var(--shadow-card);
+  font-size: var(--fs-label);
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--ease), background var(--ease), box-shadow var(--ease);
+}
+
+.pl-tile:hover:not(.is-selected) {
+  box-shadow: var(--shadow-card-hover);
+  border-color: var(--border-strong);
+}
+
+.pl-tile.is-selected {
+  border-color: var(--primary);
+  background: var(--primary-50);
+}
+
+.pl-tile-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.pl-tile-day {
+  font-size: var(--fs-label);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.pl-tile.is-today .pl-tile-day {
+  color: var(--primary);
+}
+
+.pl-tile-date {
+  font-size: var(--fs-title);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.pl-tile-min {
+  font-size: var(--fs-meta);
+  color: var(--muted);
+}
+
+.pl-check {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--success);
+  color: #fff;
+}
+
+.type-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  height: calc(22 * var(--u));
+  min-height: 20px;
+  padding: 0 8px;
+  border-radius: 6px;
+  background: var(--soft);
+  font-size: var(--fs-meta);
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.pl-tile.is-selected .type-badge {
+  background: #fff;
+}
+
+.type-badge i {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.pl-grid {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: var(--gap);
+}
+
+.pl-meta {
+  display: inline-flex;
+  gap: 6px;
+}
+
+.pl-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: calc(12 * var(--u));
+}
+
+.pl-steps {
+  display: flex;
+  flex-direction: column;
+  gap: calc(10 * var(--u));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pl-steps li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: var(--fs-body);
+  line-height: 1.45;
+}
+
+.pl-steps b {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  background: var(--primary-50);
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.pl-tip {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--soft);
+  font-size: var(--fs-body);
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.pl-tip svg {
+  flex: none;
+  margin-top: 2px;
+}
+
+.pl-actions {
+  flex: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: calc(12 * var(--u));
+  padding-top: calc(12 * var(--u));
+  border-top: 1px solid var(--border);
+}
+
+.pl-rationale,
+.pl-safety,
+.pl-sources {
+  font-size: var(--fs-body);
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+.pl-sources {
+  font-size: var(--fs-label);
+  color: var(--subtle);
+}
+
+.pl-warn {
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--warning-bg);
+  font-size: var(--fs-label);
+  font-weight: 500;
+  color: #b54708;
+}
+
+.pl-none {
+  flex: 1;
+}
+
+@container main (max-width: 700px) {
+  .pl-week {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .pl-tile-date {
+    font-size: var(--fs-body);
+  }
+}
+
+@container main (max-width: 760px) {
+  .pl-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .pl-detail {
+    min-height: calc(300 * var(--u));
+  }
+
+  .pl-why {
+    min-height: calc(220 * var(--u));
+  }
+}

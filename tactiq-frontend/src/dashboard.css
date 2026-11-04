@@ -1,0 +1,329 @@
+/* ==========================================
+   DASHBOARD - layout reacts to the width of .app-body (container "main"), not the viewport,
+   so it reflows when the copilot docks. Fit mode: rows share the height; below the min-height the body scrolls.
+   ========================================== */
+
+.db {
+  flex: 1 1 auto;
+  min-height: calc(560 * var(--u));
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  grid-template-rows: auto auto minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--gap);
+}
+
+/* Right column: the Pain & injury card spans both content rows. */
+.db-chart-card { grid-column: 1; grid-row: 3; }
+.db-recent { grid-column: 1; grid-row: 4; }
+.db-pain { grid-column: 2; grid-row: 3 / 5; }
+
+.db-filters,
+.db-kpis {
+  grid-column: 1 / -1;
+}
+
+.db-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--gap);
+}
+
+/* ---------- filter bar ---------- */
+.fb {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.fb-reset {
+  margin-left: auto;
+}
+
+.fb-switch {
+  padding-right: 8px;
+}
+
+.fb-track {
+  position: relative;
+  width: 28px;
+  height: 16px;
+  border-radius: 999px;
+  background: #d0d5dd;
+  transition: background var(--ease);
+}
+
+.fb-knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.25);
+  transition: transform var(--ease);
+}
+
+.fb-switch.is-active .fb-track {
+  background: var(--primary);
+}
+
+.fb-switch.is-active .fb-knob {
+  transform: translateX(12px);
+}
+
+/* ---------- KPI extras ---------- */
+.db-wl {
+  padding: 0 2px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  font: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  cursor: pointer;
+  pointer-events: auto;
+  position: relative;
+  z-index: 3;
+  transition: opacity var(--ease), background var(--ease);
+}
+
+.db-wl:hover {
+  background: var(--primary-50);
+}
+
+.db-wl.is-faded {
+  opacity: 0.35;
+}
+
+.db-wl.is-on {
+  color: var(--primary);
+}
+
+.db-wl-dash {
+  color: var(--subtle);
+  font-weight: 400;
+}
+
+/* ---------- main chart ---------- */
+.db-chart-card {
+  container-type: inline-size;
+  container-name: cc;
+}
+
+.db-chart {
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
+}
+
+.db-chart.is-clickable {
+  cursor: pointer;
+}
+
+.db-chart .recharts-wrapper {
+  outline: none;
+}
+
+.chart-legend {
+  display: flex;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.legend-chip i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--c, #98a2b3);
+  opacity: 0.45;
+}
+
+.legend-chip.is-active {
+  background: #fff;
+  border-color: var(--c);
+  color: var(--text);
+}
+
+.legend-chip.is-active i {
+  opacity: 1;
+}
+
+@container cc (max-width: 620px) {
+  .chart-legend {
+    display: none;
+  }
+}
+
+.chart-tip {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: var(--shadow-pop);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.chart-tip strong {
+  font-size: 12.5px;
+  color: var(--text);
+}
+
+.chart-tip span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.chart-tip span b {
+  margin-left: auto;
+  padding-left: 12px;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.chart-tip i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.chart-tip em {
+  margin-top: 2px;
+  font-style: normal;
+  color: var(--subtle);
+}
+
+/* ---------- recent activity ---------- */
+.tbl--compact td {
+  height: calc(40 * var(--u));
+  min-height: 34px;
+}
+
+.tbl--compact th {
+  height: calc(32 * var(--u));
+}
+
+.row-link {
+  cursor: pointer;
+}
+
+.act-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.act-cell .ibadge {
+  width: calc(30 * var(--u));
+  height: calc(30 * var(--u));
+  min-width: 26px;
+  min-height: 26px;
+}
+
+.act-name {
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.act-name:hover {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.muted-cell {
+  color: var(--muted);
+  font-size: var(--fs-label);
+  white-space: nowrap;
+}
+
+/* ---------- pain & injury ---------- */
+.pain-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: calc(10 * var(--u));
+}
+
+.pain-info {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: calc(6 * var(--u));
+}
+
+.pain-part {
+  font-size: var(--fs-title);
+  font-weight: 600;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.pain-meter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  max-width: 260px;
+  font-size: var(--fs-label);
+}
+
+.pain-meter .kpi-progress {
+  flex: 1;
+  background: #eceef4;
+}
+
+/* ---------- reflow by available width ---------- */
+@container main (max-width: 940px) {
+  .db-kpis .kpi-ctx {
+    font-size: 11px;
+  }
+}
+
+@container main (max-width: 600px) {
+  .db {
+    min-height: 0;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+    grid-auto-rows: auto;
+  }
+
+  .db-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .db-chart-card {
+    height: calc(300 * var(--u));
+  }
+
+  .db-chart-card,
+  .db-recent,
+  .db-pain {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  .db-recent,
+  .db-pain {
+    min-height: calc(220 * var(--u));
+  }
+
+  .db-pain {
+    min-height: calc(420 * var(--u));
+  }
+}

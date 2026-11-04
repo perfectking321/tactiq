@@ -1,0 +1,167 @@
+/* ACTIVITY: KPI row + table card. Reflows by the width of the main column (container query). */
+.act-kpis {
+  flex: none;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--gap);
+}
+
+.act-kpi-skel {
+  height: calc(130 * var(--u));
+  border-radius: var(--radius-card);
+}
+
+.act-card {
+  flex: 1 1 auto;
+  min-height: calc(220 * var(--u));
+}
+
+.act-card .ui-card-action {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: clamp(130px, calc(170 * var(--u)), 220px);
+  height: var(--ctl-sm);
+  padding: 0 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-ctl);
+  background: #fff;
+  color: var(--subtle);
+  transition: border-color var(--ease), box-shadow var(--ease);
+}
+
+.search:focus-within {
+  border-color: var(--primary);
+  box-shadow: var(--ring);
+}
+
+.search input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  font-size: var(--fs-label);
+  color: var(--text);
+}
+
+.search input:focus {
+  outline: none;
+}
+
+.act-skels {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.act-tbl .col-date {
+  width: 11%;
+  white-space: nowrap;
+}
+
+.act-tbl .col-details {
+  white-space: nowrap;
+}
+
+.act-tbl .col-notes {
+  width: 24%;
+  max-width: 0;
+}
+
+.act-tbl .col-menu {
+  width: 72px;
+  text-align: right;
+}
+
+.act-two {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.25;
+}
+
+.act-sub {
+  font-size: var(--fs-meta);
+  color: var(--subtle);
+}
+
+.note-cell {
+  display: block;
+  overflow: hidden;
+  font-size: var(--fs-label);
+  color: var(--muted);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.effort {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.effort-bar {
+  width: calc(64 * var(--u));
+  height: 6px;
+  border-radius: 999px;
+  background: var(--primary-50);
+  overflow: hidden;
+}
+
+.effort-bar > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--grad);
+}
+
+.row-confirm {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--fs-label);
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+@container main (max-width: 860px) {
+  .act-notes-hide {
+    display: none;
+  }
+}
+
+@container main (max-width: 760px) {
+  .act-card .ui-card-head {
+    flex-wrap: wrap;
+  }
+
+  .act-card .ui-card-action {
+    flex: 1 1 100%;
+    justify-content: flex-start;
+  }
+
+  .act-card .search {
+    flex: 1 1 110px;
+    width: auto;
+    min-width: 0;
+  }
+
+  .act-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .act-card {
+    min-height: calc(320 * var(--u));
+  }
+}
+
+@container main (max-width: 560px) {
+  .act-tbl .col-details {
+    display: none;
+  }
+}

@@ -1,0 +1,202 @@
+/* Body figure (dashboard Pain & injury card + Profile injury card). The hover card is positioned inside .bmf. */
+.pain-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+}
+
+.bmf {
+  position: relative;
+  flex: 1 1 0;
+  min-height: 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.bmf--row {
+  flex-direction: row;
+  align-items: stretch;
+  gap: calc(16 * var(--u));
+}
+
+.bmf--row .bm-stage {
+  flex: 0 0 38%;
+}
+
+.bmf-side {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+}
+
+.bm-views {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 2;
+  display: inline-flex;
+  padding: 2px;
+  border-radius: 8px;
+  background: var(--soft);
+}
+
+.bmf--row .bm-views {
+  left: 0;
+  right: auto;
+}
+
+.bm-view {
+  height: calc(var(--ctl-sm) - 8px);
+  min-height: 22px;
+  padding: 0 10px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  font-size: var(--fs-meta);
+  font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.bm-view.is-active {
+  background: #fff;
+  color: var(--text);
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.12);
+}
+
+.bm-fig:focus-visible {
+  box-shadow: var(--ring);
+}
+
+.bm-stage {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.bm-fig {
+  height: 100%;
+  aspect-ratio: 1 / 2;
+  max-width: 100%;
+  border-radius: 12px;
+}
+
+.bm-fig .rbh-wrapper {
+  height: 100%;
+}
+
+/* The posterior model draws the feet below its 0..200 viewBox: shrink and let it overflow. */
+.bm-fig .rbh {
+  height: 93%;
+  overflow: visible;
+}
+
+.bm-fig .rbh polygon {
+  cursor: default !important;
+  stroke: #b9c0d8;
+  stroke-width: 0.35;
+  stroke-linejoin: round;
+  transition: filter 0.15s ease;
+}
+
+.bm-fig.is-hoverable .rbh polygon[data-injured] {
+  cursor: help !important;
+  stroke: rgba(120, 30, 20, 0.35);
+}
+
+.bm-fig.is-hoverable .rbh polygon[data-injured]:hover {
+  filter: brightness(0.92);
+}
+
+/* ---------- hover card ---------- */
+.bm-tip {
+  position: absolute;
+  z-index: 20;
+  width: clamp(210px, calc(240 * var(--u)), 280px);
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: var(--shadow-pop);
+  font-size: var(--fs-label);
+  color: var(--text);
+}
+
+.bm-tip p {
+  margin: 0;
+}
+
+.bm-tip-title {
+  font-size: var(--fs-body);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.bm-tip-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0;
+}
+
+.bm-chip {
+  flex: none;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+.bm-chip--current {
+  background: var(--danger-bg);
+  color: #b42318;
+}
+
+.bm-chip--recovering {
+  background: var(--warning-bg);
+  color: #b54708;
+}
+
+.bm-painbar {
+  flex: 1;
+  height: 6px;
+  border-radius: 999px;
+  background: #eceef4;
+  overflow: hidden;
+}
+
+.bm-painbar > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+}
+
+.bm-tip-pain {
+  flex: none;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.bm-tip-text {
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.bm-tip-link {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  font-weight: 600;
+  color: var(--primary);
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bm-fig .rbh polygon {
+    transition: none;
+  }
+}

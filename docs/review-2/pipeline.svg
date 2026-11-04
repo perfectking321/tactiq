@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1300 650" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#3c4a43"/>
+    </marker>
+    <style>
+      .box { fill:#ffffff; stroke:#9fb3a8; stroke-width:1.5; }
+      .key { fill:#e8f5ef; stroke:#20a56c; stroke-width:2; }
+      .llm { fill:#14201b; stroke:#14201b; }
+      .t { font-size:15px; font-weight:700; fill:#14201b; }
+      .s { font-size:12px; fill:#4e5d55; }
+      .tl { font-size:15px; font-weight:700; fill:#ffffff; }
+      .sl { font-size:12px; fill:#c9e9d9; }
+      .lane { font-size:13px; font-weight:700; letter-spacing:1px; fill:#69766f; }
+      .line { stroke:#3c4a43; stroke-width:1.6; fill:none; marker-end:url(#arrow); }
+      .dash { stroke:#8a9890; stroke-width:1.4; fill:none; stroke-dasharray:5 4; marker-end:url(#arrow); }
+    </style>
+  </defs>
+
+  <rect x="0" y="0" width="1300" height="650" fill="#f7f9f8"/>
+  <text x="650" y="30" text-anchor="middle" font-size="20" font-weight="700" fill="#14201b">TactiQ RAG pipeline (fixed sequence - one LLM call per answer)</text>
+
+  <!-- Offline lane -->
+  <rect x="20" y="48" width="1260" height="180" rx="12" fill="#eef1ef"/>
+  <text x="36" y="70" class="lane">OFFLINE - BUILD KNOWLEDGE INDEX (python -m app.rag.ingest)</text>
+
+  <rect class="box" x="40" y="85" width="210" height="62" rx="8"/>
+  <text class="t" x="145" y="110" text-anchor="middle">Curated knowledge base</text>
+  <text class="s" x="145" y="130" text-anchor="middle">19 docs, open-access sources</text>
+
+  <rect class="box" x="300" y="85" width="210" height="62" rx="8"/>
+  <text class="t" x="405" y="110" text-anchor="middle">Chunking (NLP)</text>
+  <text class="s" x="405" y="130" text-anchor="middle">split by heading: 91 chunks</text>
+
+  <rect class="key" x="560" y="85" width="230" height="62" rx="8"/>
+  <text class="t" x="675" y="110" text-anchor="middle">MiniLM embeddings (DL)</text>
+  <text class="s" x="675" y="130" text-anchor="middle">Transformer encoder, 384-dim</text>
+
+  <rect class="box" x="840" y="85" width="200" height="62" rx="8"/>
+  <text class="t" x="940" y="110" text-anchor="middle">ChromaDB</text>
+  <text class="s" x="940" y="130" text-anchor="middle">vector index (cosine)</text>
+
+  <rect class="box" x="560" y="160" width="230" height="52" rx="8" stroke-dasharray="5 4"/>
+  <text class="t" x="675" y="181" text-anchor="middle" font-size="13">TF-IDF index (ML baseline)</text>
+  <text class="s" x="675" y="199" text-anchor="middle">used only to evaluate retrieval</text>
+
+  <path class="line" d="M250,116 H296"/>
+  <path class="line" d="M510,116 H556"/>
+  <path class="line" d="M790,116 H836"/>
+  <path class="dash" d="M405,147 V186 H556"/>
+
+  <!-- Online lane -->
+  <rect x="20" y="245" width="1260" height="390" rx="12" fill="#e8f5ef"/>
+  <text x="36" y="267" class="lane">ONLINE - EVERY CHAT MESSAGE (POST /chat)</text>
+
+  <rect class="box" x="40" y="290" width="150" height="70" rx="8"/>
+  <text class="t" x="115" y="318" text-anchor="middle">Player question</text>
+  <text class="s" x="115" y="338" text-anchor="middle">React app, JWT login</text>
+
+  <rect class="key" x="215" y="290" width="160" height="70" rx="8"/>
+  <text class="t" x="295" y="313" text-anchor="middle">1 Safety guardrail</text>
+  <text class="s" x="295" y="332" text-anchor="middle">rules: red-flag terms,</text>
+  <text class="s" x="295" y="348" text-anchor="middle">pain score, injury</text>
+
+  <rect class="key" x="400" y="290" width="160" height="70" rx="8"/>
+  <text class="t" x="480" y="313" text-anchor="middle">2 Retrieve top-4</text>
+  <text class="s" x="480" y="332" text-anchor="middle">MiniLM query vector</text>
+  <text class="s" x="480" y="348" text-anchor="middle">+ cosine search</text>
+
+  <rect class="key" x="585" y="290" width="160" height="70" rx="8"/>
+  <text class="t" x="665" y="313" text-anchor="middle">3 Player context</text>
+  <text class="s" x="665" y="332" text-anchor="middle">profile, load (sRPE),</text>
+  <text class="s" x="665" y="348" text-anchor="middle">ACWR, wellness, matches</text>
+
+  <rect class="key" x="770" y="290" width="160" height="70" rx="8"/>
+  <text class="t" x="850" y="313" text-anchor="middle">4 Memory</text>
+  <text class="s" x="850" y="332" text-anchor="middle">rolling summary +</text>
+  <text class="s" x="850" y="348" text-anchor="middle">last 6 messages</text>
+
+  <rect class="key" x="955" y="290" width="160" height="70" rx="8"/>
+  <text class="t" x="1035" y="313" text-anchor="middle">5 Engineered prompt</text>
+  <text class="s" x="1035" y="332" text-anchor="middle">persona, rules, safety,</text>
+  <text class="s" x="1035" y="348" text-anchor="middle">context, cited chunks</text>
+
+  <rect class="llm" x="1140" y="290" width="125" height="70" rx="8"/>
+  <text class="tl" x="1202" y="318" text-anchor="middle">6 Gemini</text>
+  <text class="sl" x="1202" y="338" text-anchor="middle">LLM (Transformer)</text>
+
+  <path class="line" d="M190,325 H211"/>
+  <path class="line" d="M375,325 H396"/>
+  <path class="line" d="M560,325 H581"/>
+  <path class="line" d="M745,325 H766"/>
+  <path class="line" d="M930,325 H951"/>
+  <path class="line" d="M1115,325 H1136"/>
+
+  <!-- ChromaDB feeds retrieval -->
+  <path class="line" d="M940,147 V236 H480 V286"/>
+
+  <!-- SQLite -->
+  <rect class="box" x="585" y="430" width="345" height="70" rx="8"/>
+  <text class="t" x="757" y="453" text-anchor="middle">SQLite database</text>
+  <text class="s" x="757" y="472" text-anchor="middle">users (bcrypt hashes), profile, training /</text>
+  <text class="s" x="757" y="488" text-anchor="middle">match / check-in logs, chat history, plans</text>
+  <path class="line" d="M665,430 V364"/>
+  <path class="line" d="M850,430 V364"/>
+
+  <!-- Post-process and answer -->
+  <rect class="key" x="1010" y="430" width="255" height="70" rx="8"/>
+  <text class="t" x="1137" y="453" text-anchor="middle">7 Post-process + save</text>
+  <text class="s" x="1137" y="472" text-anchor="middle">add safety notice by code, keep only</text>
+  <text class="s" x="1137" y="488" text-anchor="middle">cited sources, store in memory</text>
+  <path class="line" d="M1202,360 V426"/>
+
+  <rect class="box" x="1010" y="540" width="255" height="70" rx="8"/>
+  <text class="t" x="1137" y="565" text-anchor="middle">Answer with citations [1][2]</text>
+  <text class="s" x="1137" y="585" text-anchor="middle">+ safety banner when flagged</text>
+  <path class="line" d="M1137,500 V536"/>
+
+  <!-- Plan branch note -->
+  <rect class="box" x="40" y="430" width="490" height="180" rx="8" fill="#ffffff"/>
+  <text class="t" x="60" y="458">Same pipeline, two outputs</text>
+  <text class="s" x="60" y="484">• Chat: free-text answer, temperature 0.3</text>
+  <text class="s" x="60" y="506">• Weekly plan: + few-shot example + JSON schema (structured output)</text>
+  <text class="s" x="60" y="528">  -> 7-day plan validated with Pydantic before it is shown</text>
+  <text class="s" x="60" y="556">Urgent red flag: the safety notice is added by code, so it is shown</text>
+  <text class="s" x="60" y="576">even if the LLM is unavailable. Steps never change order and the</text>
+  <text class="s" x="60" y="596">LLM never chooses actions - it only writes the final text.</text>
+</svg>
