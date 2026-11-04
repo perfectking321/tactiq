@@ -23,3 +23,6 @@ graphify-out/
 # misc
 *.log
 .DS_Store
+
+# built web app copied next to the API for single-origin hosting
+tactiq-api/static/

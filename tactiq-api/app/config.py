@@ -23,7 +23,22 @@ class Settings:
     jwt_secret: str = os.getenv("JWT_SECRET", "")
     jwt_expire_hours: int = int(os.getenv("JWT_EXPIRE_HOURS", "24"))
 
-    database_url: str = os.getenv("DATABASE_URL", f"sqlite:///{BASE_DIR / 'tactiq.db'}")
+    # DATA_DIR holds the SQLite file when DATABASE_URL is not set (mount a persistent volume there when hosting).
+    data_dir: Path = Path(os.getenv("DATA_DIR") or BASE_DIR)
+    database_url: str = os.getenv("DATABASE_URL") or f"sqlite:///{Path(os.getenv('DATA_DIR') or BASE_DIR) / 'tactiq.db'}"
+    # Hosts hand out postgres:// URLs; SQLAlchemy wants the driver name (psycopg is in requirements.txt).
+    if database_url.startswith("postgres://"):
+        database_url = database_url.replace("postgres://", "postgresql+psycopg://", 1)
+    elif database_url.startswith("postgresql://"):
+        database_url = database_url.replace("postgresql://", "postgresql+psycopg://", 1)
+
+    # Built frontend (the Dockerfile copies it here). When it exists the API serves the web app too, on one origin.
+    static_dir: Path = Path(os.getenv("STATIC_DIR") or BASE_DIR / "static")
+    # Per-IP limits (requests per minute) that protect logins and the free Gemini quota on a public site.
+    rate_limit_enabled: bool = os.getenv("RATE_LIMIT_ENABLED", "true").lower() in ("1", "true", "yes")
+    rate_limit_auth_per_min: int = int(os.getenv("RATE_LIMIT_AUTH_PER_MIN", "20"))
+    rate_limit_ai_per_min: int = int(os.getenv("RATE_LIMIT_AI_PER_MIN", "20"))
+
     cors_origins: list[str] = [
         o.strip()
         for o in os.getenv("CORS_ORIGINS", "http://localhost:5173").split(",")

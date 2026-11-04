@@ -1,0 +1,19 @@
+# Run the whole app locally (or on any VPS) with:   docker compose up --build
+# Then open http://localhost:8000
+# Put your settings in a file named .env next to this one (copy .env.production.example).
+services:
+  tactiq:
+    build: .
+    image: tactiq:latest
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      DATA_DIR: /data
+    volumes:
+      - tactiq-data:/data
+    restart: unless-stopped
+
+volumes:
+  tactiq-data:

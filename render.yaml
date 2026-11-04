@@ -1,0 +1,29 @@
+# Render "Blueprint": New + > Blueprint > pick this repo, Render reads this file and builds the Dockerfile.
+# The only value you type in is GEMINI_API_KEY (JWT_SECRET is generated for you).
+# RAM: the AI model needs about 1-2 GB, so use the "standard" plan (2 GB). The 512 MB "starter" plan will run out of memory.
+services:
+  - type: web
+    name: tactiq
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: standard
+    healthCheckPath: /api/health
+    autoDeploy: true
+    disk:
+      name: tactiq-data
+      mountPath: /data
+      sizeGB: 1
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: GEMINI_MODEL
+        value: gemini-flash-latest
+      - key: GEMINI_FALLBACK_MODEL
+        value: gemini-flash-lite-latest
+      - key: DEMO_MODE
+        value: "true"
+      - key: DATA_DIR
+        value: /data

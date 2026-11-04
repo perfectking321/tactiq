@@ -107,3 +107,8 @@ Add or edit a markdown file in `tactiq-api/kb/` (see `kb/README.md` for the form
 | Port already in use | Close old TactiQ windows (or other apps on ports 8000/5173) |
 
 TactiQ provides general coaching information, not medical advice.
+
+## Hosting online
+The repo includes a `Dockerfile` that packages the API and the web app as one container, a `docker-compose.yml`,
+a Render `render.yaml` blueprint and `.env.production.example`. See **[DEPLOY.md](DEPLOY.md)** for the
+step-by-step guide (Render, Railway/Fly, or your own server). Run `docker compose up --build` to try it locally.

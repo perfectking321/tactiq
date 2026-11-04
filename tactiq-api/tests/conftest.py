@@ -7,6 +7,7 @@ _tmp = Path(tempfile.mkdtemp())
 os.environ["DATABASE_URL"] = f"sqlite:///{_tmp / 'test.db'}"
 os.environ["JWT_SECRET"] = "test-secret-not-for-production-use-only-1234567890"
 os.environ["GEMINI_API_KEY"] = ""
+os.environ["RATE_LIMIT_ENABLED"] = "false"  # the limiter is tested on its own in test_hosting.py
 
 import pytest  # noqa: E402
 from fastapi.testclient import TestClient  # noqa: E402
