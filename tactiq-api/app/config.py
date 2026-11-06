@@ -50,10 +50,15 @@ class Settings:
     demo_mode: bool = os.getenv("DEMO_MODE", "true").lower() in ("1", "true", "yes")
 
     kb_dir: Path = BASE_DIR / "kb"
-    index_dir: Path = BASE_DIR / "index"
+    # EMBEDDING_BACKEND=local (default): MiniLM runs on this machine and vectors live in ChromaDB (needs ~1 GB RAM).
+    # EMBEDDING_BACKEND=gemini: Google's embedding API + a small numpy index. No PyTorch, so it fits in 512 MB (free hosting).
+    embedding_backend: str = os.getenv("EMBEDDING_BACKEND", "local").strip().lower()
+    index_dir: Path = BASE_DIR / ("kb_index" if embedding_backend == "gemini" else "index")
     # The embedding model is cached inside the project so it travels with it (no re-download).
     models_dir: Path = BASE_DIR / "models"
     embedding_model: str = os.getenv("EMBEDDING_MODEL", "sentence-transformers/all-MiniLM-L6-v2")
+    gemini_embedding_model: str = os.getenv("GEMINI_EMBEDDING_MODEL", "gemini-embedding-001")
+    gemini_embedding_dims: int = int(os.getenv("GEMINI_EMBEDDING_DIMS", "768"))
     top_k: int = 4
 
 
@@ -61,7 +66,7 @@ settings = Settings()
 
 # Once the embedding model is cached in ./models, run fully offline (no Hugging Face network calls).
 _cached_model = settings.models_dir / ("models--" + settings.embedding_model.replace("/", "--"))
-if _cached_model.exists():
+if settings.embedding_backend == "local" and _cached_model.exists():
     os.environ.setdefault("HF_HUB_OFFLINE", "1")
 
 if not settings.jwt_secret:

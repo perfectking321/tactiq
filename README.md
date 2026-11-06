@@ -122,3 +122,7 @@ TactiQ provides general coaching information, not medical advice.
 The repo includes a `Dockerfile` that packages the API and the web app as one container, a `docker-compose.yml`,
 a Render `render.yaml` blueprint and `.env.production.example`. See **[DEPLOY.md](DEPLOY.md)** for the
 step-by-step guide (Render, Railway/Fly, or your own server). Run `docker compose up --build` to try it locally.
+
+The hosted image is **light** (about 150 MB RAM, fits free hosting): search embeddings come from the Gemini API
+(`EMBEDDING_BACKEND=gemini`, index in `tactiq-api/kb_index/`) instead of the local MiniLM + ChromaDB used in development.
+On the 44-question retrieval benchmark it scored Hit@1 0.98 vs 0.82 for local MiniLM.

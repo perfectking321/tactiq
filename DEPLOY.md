@@ -1,26 +1,37 @@
 # Deploying TactiQ
 
 TactiQ ships as **one Docker image**: the FastAPI backend (RAG + Gemini) and the built web app together, on a single
-address. You only need to host that one container, give it two settings, and attach a small disk.
+address. You only need to host that one container and give it two settings.
+
+The image is **light**: it uses Google's embedding API (`EMBEDDING_BACKEND=gemini`) instead of a local PyTorch model, and the
+search index (`tactiq-api/kb_index/`) is committed to git. It runs in roughly 150 MB of RAM, so it fits **free hosting
+(512 MB)**. For local development `requirements.txt` still uses the local MiniLM + ChromaDB mode (`EMBEDDING_BACKEND=local`).
+If you edit `tactiq-api/kb/`, rebuild the index with `EMBEDDING_BACKEND=gemini python -m app.rag.ingest` and commit `kb_index/`
+(the server also rebuilds it by itself on startup if it is out of date).
 
 ## What you need
 | | |
 |---|---|
-| `GEMINI_API_KEY` | free key from https://aistudio.google.com/apikey |
+| `GEMINI_API_KEY` | free key from https://aistudio.google.com/apikey (used for answers **and** for search embeddings) |
 | `JWT_SECRET` | a new random string: `python -c "import secrets; print(secrets.token_urlsafe(48))"` (Render can generate it for you) |
-| A persistent disk mounted at `/data` | where the SQLite database lives (1 GB is plenty) |
-| About **2 GB RAM** | PyTorch + the embedding model need ~1 GB. 512 MB plans will crash. |
+| About **512 MB RAM** | enough for the light image. |
+| A persistent disk at `/data` (optional) | keeps the SQLite database across restarts. Free plans have none: data resets on restart. |
 
 Everything else has a sensible default (see `.env.production.example`).
 
-## Option A: Render (fewest steps)
+## Option A: Render Free (no card)
 1. Push this folder to GitHub (already done).
-2. Render dashboard > **New + > Blueprint** > pick the repo. Render reads `render.yaml`.
-3. Paste your `GEMINI_API_KEY` when asked. `JWT_SECRET` is generated automatically.
-4. Click **Apply**. The first build takes ~10 minutes (it downloads PyTorch and the embedding model and builds the search index).
-5. Open the URL Render gives you. Check `https://<your-app>/api/health` shows `"status":"ok"` and `"ai_configured":true`.
+2. Render dashboard > **New + > Web Service** > pick the repo > Language **Docker**, Branch `main`, Instance type **Free**.
+3. Environment variables: `GEMINI_API_KEY`, `JWT_SECRET` (use the Generate button), `DEMO_MODE=true`.
+   Optional: `GEMINI_MODEL=gemini-flash-latest`, `GEMINI_FALLBACK_MODEL=gemini-flash-lite-latest`.
+4. Advanced > **Health Check Path** `/api/health`. Do not add a disk (free plans cannot).
+5. **Deploy web service**. The first build takes ~5 minutes. Open the URL and check `/api/health` shows `"status":"ok"` and `"ai_configured":true`.
 
-`render.yaml` uses the 2 GB **standard** plan and a 1 GB disk. Prices change, so check Render's pricing page.
+Or use **New + > Blueprint**: Render reads `render.yaml` (free plan, same settings).
+
+Free-plan limits: the service **sleeps after ~15 minutes idle** (the first visit afterwards takes about a minute) and the
+database **resets on every restart or deploy**. The one-click demo profile re-creates itself, so a showcase works fine.
+To keep real users' data, use a free Postgres (Neon or Supabase) and set `DATABASE_URL`, or upgrade to a paid plan with a disk.
 
 ## Option B: Railway / Fly.io / Google Cloud Run / any Docker host
 1. Create a service from this repo and tell it to use the **`Dockerfile`** in the repo root (context = repo root).
@@ -44,7 +55,7 @@ docker compose up --build
 Open http://localhost:8000. Your data is kept in the `tactiq-data` volume.
 
 ## How it is wired
-- The image builds the React app, bakes in the embedding model and the search index, and starts `uvicorn`.
+- The image builds the React app, ships the prebuilt search index (`kb_index/`) and starts `uvicorn`. Search embeddings come from the Gemini API.
 - **All API routes are under `/api`** (e.g. `/api/auth/login`). Every other URL serves the web app, so refreshing `/plan` works.
 - `GET /api/health` is the health check. It never reveals secrets, only whether the AI key is configured and the index is ready.
 - Local development is unchanged: `start.bat` still runs Vite + the API with the `/api` proxy.
@@ -60,8 +71,8 @@ Open http://localhost:8000. Your data is kept in the `tactiq-data` volume.
 ## Troubleshooting
 | Symptom | Likely cause |
 |---|---|
-| Container restarts / "Killed" | Not enough RAM. Use a plan with 2 GB. |
+| Container restarts / "Killed" | Not enough RAM (the light image needs ~150 MB; the old PyTorch build needed 1-2 GB). |
 | Coach says "not configured" | `GEMINI_API_KEY` is missing. See `/api/health` (`ai_configured`). |
-| Coach says "quota is busy" | Gemini free-tier rate limit. Wait a minute or upgrade the key. |
+| Coach says "quota is busy" | Gemini free-tier rate limit (each question uses one embedding call plus one answer call). Wait a minute or upgrade the key. |
 | Data disappears on redeploy | `/data` is not a persistent disk/volume. |
 | Everyone gets "Too many requests" | All users share one IP behind a proxy that is not forwarding `X-Forwarded-For`. Raise the limits. |

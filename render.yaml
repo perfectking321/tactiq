@@ -1,19 +1,18 @@
 # Render "Blueprint": New + > Blueprint > pick this repo, Render reads this file and builds the Dockerfile.
+# FREE plan (512 MB RAM, no card): the light image (Google embeddings, no PyTorch) needs only ~150 MB.
 # The only value you type in is GEMINI_API_KEY (JWT_SECRET is generated for you).
-# RAM: the AI model needs about 1-2 GB, so use the "standard" plan (2 GB). The 512 MB "starter" plan will run out of memory.
+# Free-plan limits: the service sleeps after ~15 min idle (first visit then takes ~1 min) and has no persistent disk,
+# so accounts and check-ins are wiped on every restart/deploy. For permanent data: set plan to "starter" and add a disk
+# (see DEPLOY.md), or point DATABASE_URL at a free Postgres (Neon / Supabase).
 services:
   - type: web
     name: tactiq
     runtime: docker
     dockerfilePath: ./Dockerfile
     dockerContext: .
-    plan: standard
+    plan: free
     healthCheckPath: /api/health
     autoDeploy: true
-    disk:
-      name: tactiq-data
-      mountPath: /data
-      sizeGB: 1
     envVars:
       - key: GEMINI_API_KEY
         sync: false
@@ -25,5 +24,3 @@ services:
         value: gemini-flash-lite-latest
       - key: DEMO_MODE
         value: "true"
-      - key: DATA_DIR
-        value: /data

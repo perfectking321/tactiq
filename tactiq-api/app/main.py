@@ -25,14 +25,10 @@ SERVE_WEB = INDEX.is_file()
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
-    # Build the retrieval index on first start if the image/checkout does not already have one.
-    if not (settings.index_dir / "chunks.json").exists():
-        try:
-            from app.rag.ingest import build
+    # Build the retrieval index on start if the image/checkout does not already have a current one.
+    from app.rag.ingest import ensure_index
 
-            log.warning("Search index missing; building it now: %s", build())
-        except Exception:  # noqa: BLE001
-            log.exception("Could not build the search index. The AI coach will not work until it exists.")
+    ensure_index()
     yield
 
 

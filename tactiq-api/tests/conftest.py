@@ -7,6 +7,8 @@ _tmp = Path(tempfile.mkdtemp())
 os.environ["DATABASE_URL"] = f"sqlite:///{_tmp / 'test.db'}"
 os.environ["JWT_SECRET"] = "test-secret-not-for-production-use-only-1234567890"
 os.environ["GEMINI_API_KEY"] = ""
+os.environ["STATIC_DIR"] = str(_tmp / "no-static")  # dev-style root routes, even if a built web app sits in ./static
+os.environ["EMBEDDING_BACKEND"] = "local"  # the light mode is tested on its own in test_light_index.py
 os.environ["RATE_LIMIT_ENABLED"] = "false"  # the limiter is tested on its own in test_hosting.py
 
 import pytest  # noqa: E402
