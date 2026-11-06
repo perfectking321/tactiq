@@ -8,4 +8,10 @@ if [ "$(id -u)" = "0" ]; then
     chown -R app:app "${DATA_DIR:-/data}" 2>/dev/null || true
     exec gosu app "$@"
 fi
+# Non-root start: if the data folder is not writable, fall back to a temporary one so the app still boots.
+D="${DATA_DIR:-/data}"
+if ! mkdir -p "$D" 2>/dev/null || [ ! -w "$D" ]; then
+    export DATA_DIR=/tmp/tactiq-data
+    mkdir -p "$DATA_DIR"
+fi
 exec "$@"

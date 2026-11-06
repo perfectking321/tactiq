@@ -1,3 +1,13 @@
+---
+title: TactiQ
+emoji: 🏸
+colorFrom: green
+colorTo: blue
+sdk: docker
+app_port: 8000
+pinned: false
+---
+
 # TactiQ - GenAI badminton coach
 
 TactiQ is a web app for amateur and college badminton players. It combines **Retrieval-Augmented Generation

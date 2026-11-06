@@ -43,7 +43,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends gosu \
     && rm -rf /var/lib/apt/lists/* \
     && useradd --system --uid 10001 --home /app app \
     && mkdir -p /data \
-    && chown -R app:app /app/index /app/models /data
+    && chown -R app:app /app/index /app/models /data \
+    && chmod -R a+rwX /app/index /app/models /data
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 VOLUME ["/data"]
