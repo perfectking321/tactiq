@@ -37,11 +37,15 @@ RUN JWT_SECRET=build-time-placeholder python -m app.rag.ingest
 # The built web app. When /app/static/index.html exists the API serves it and moves all API routes under /api.
 COPY --from=web /web/dist ./static
 
-# Run as a non-root user. /data is where the SQLite database lives: mount a persistent volume there.
-RUN useradd --system --uid 10001 --home /app app \
+# The server runs as the unprivileged "app" user. /data is where the SQLite database lives: mount a persistent volume there.
+# The entrypoint starts as root only to fix the ownership of that volume (hosts mount it as root), then drops to "app".
+RUN apt-get update && apt-get install -y --no-install-recommends gosu \
+    && rm -rf /var/lib/apt/lists/* \
+    && useradd --system --uid 10001 --home /app app \
     && mkdir -p /data \
     && chown -R app:app /app/index /app/models /data
-USER app
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 VOLUME ["/data"]
 EXPOSE 8000
 
@@ -49,4 +53,5 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
     CMD python -c "import os,urllib.request; urllib.request.urlopen('http://127.0.0.1:%s/api/health' % os.environ.get('PORT','8000'), timeout=4)"
 
 # $PORT is set by most hosts (Render, Railway, Cloud Run, Fly...). Honour proxy headers so rate limits see real client IPs.
+ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["sh", "-c", "exec uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000} --proxy-headers --forwarded-allow-ips='*'"]
